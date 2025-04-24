@@ -1,13 +1,9 @@
 name: "units-test"
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '0 0 * * 1'
-  pull_request:
   push:
     branches:
       - main
-      - 'releases/*'
 
 jobs:
 
@@ -15,71 +11,64 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: ">=3.8"
+        python-version: ">=3.9"
     - name: Run synapse
       uses: ./
       with: 
         uploadLogs: true
+        artifactName: test-${{ github.run_id }}-${{ github.run_attempt }}
+        artifactRetentionDays: 1
         httpPort: 8008
   
-  test-poetry-branch:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-      with:
-        python-version: ">=3.8"
-    - name: Run synapse
-      uses: ./
-      with: 
-        uploadLogs: true
-        httpPort: 8008
-        installer: "poetry"
-        version: "master"
-
   test-poetry:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: ">=3.8"
+        python-version: ">=3.9"
     - name: Run synapse
       uses: ./
       with: 
         uploadLogs: true
+        artifactName: test-poetry-${{ github.run_id }}-${{ github.run_attempt }}
+        artifactRetentionDays: 1
         httpPort: 8008
         installer: "poetry"
   
   test-baseurl:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: ">=3.8"
+        python-version: ">=3.9"
     - name: Run synapse
       uses: ./
       with: 
         uploadLogs: true
+        artifactName: test-baseurl-${{ github.run_id }}-${{ github.run_attempt }}
+        artifactRetentionDays: 1
         httpPort: 8008
-        public_baseurl: http://10.0.2.2:8008/
+        publicBaseurl: http://10.0.2.2:8008/
   
   test-modules-poetry:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: ">=3.8"
+        python-version: ">=3.9"
     - name: Run synapse
       uses: ./
       with: 
         installer: poetry
         uploadLogs: true
+        artifactName: test-modules-poetry-${{ github.run_id }}-${{ github.run_attempt }}
+        artifactRetentionDays: 1
         httpPort: 8008
         customModules: "git+https://github.com/michaelkaye/noop-synapse-storage-provider.git"
         customConfig: | 
@@ -96,14 +85,16 @@ jobs:
   test-modules:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: ">=3.8"
+        python-version: ">=3.9"
     - name: Run synapse
       uses: ./
       with: 
         uploadLogs: true
+        artifactName: test-modules-${{ github.run_id }}-${{ github.run_attempt }}
+        artifactRetentionDays: 1
         httpPort: 8008
         customModules: "git+https://github.com/michaelkaye/noop-synapse-storage-provider.git#egg=noop-synapse-storage-provider"
         customConfig: | 

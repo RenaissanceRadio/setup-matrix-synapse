@@ -1,37 +1,32 @@
 {
-  "name": "javascript-action",
-  "version": "1.0.0",
-  "description": "JavaScript Action Template",
-  "main": "index.js",
+  "name": "setup-matrix-synapse",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
     "lint": "eslint .",
-    "prepare": "ncc build create.js -o dist/create --source-map --license licenses.txt && ncc build destroy.js -o dist/destroy --source-map --license licenses.txt",
-    "test": "jest",
-    "all": "npm run lint && npm run prepare && npm run test"
+    "prepare": "ncc build create.js -o dist/create && ncc build destroy.js -o dist/destroy",
+    "all": "npm run lint && npm run prepare"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "git+https://github.com/NetherRealmSpigot/setup-matrix-synapse.git"
   },
   "keywords": [
     "GitHub",
     "Actions",
-    "JavaScript"
+    "JavaScript",
+    "Matrix",
+    "Synapse"
   ],
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/actions/javascript-action/issues"
-  },
-  "homepage": "https://github.com/actions/javascript-action#readme",
+  "license": "CC0-1.0",
+  "homepage": "https://github.com/NetherRealmSpigot/setup-matrix-synapse#readme",
   "dependencies": {
-    "@actions/core": "^1.9.0",
-    "@actions/exec": "^1.0.4",
-    "@actions/artifact": "^1.1.0"
+    "@actions/core": "^1.11.1",
+    "@actions/exec": "^1.1.1",
+    "@actions/artifact": "^2.3.2"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.34.0",
-    "eslint": "^8.21.0",
-    "jest": "^29.0.3"
+    "@vercel/ncc": "^0.38.3",
+    "eslint": "^8.57.0"
   }
 }

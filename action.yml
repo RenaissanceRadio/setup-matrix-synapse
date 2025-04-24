@@ -1,38 +1,43 @@
-name: 'Setup Synapse'
-description: 'Deploys a synapse test server'
+name: Setup Synapse
+description: Deploys a synapse test server
 inputs:
   installer:
-    description: 'Install method (options "poetry", "venv" [default])'
-    default: 'venv'
-  uploadLogs:
-    description: 'Upload synapse logs at end'
-    required: true
-    default: true
-  artifactName:
-    description: 'Override artifact name for logs'
+    description: Installer
     required: false
-    default: 'synapse-logs'
+    default: "pip"
+  uploadLogs:
+    description: Upload synapse logs at end
+    required: false
+    default: "false"
+  artifactName:
+    description: Override artifact name for logs
+    required: false
+    default: "synapse-logs"
+  artifactRetentionDays:
+    description: Artifact retention days
+    required: false
+    default: "0"
   customConfig:
-    description: 'JSON-formatted custom config for synapse'
+    description: JSON-formatted custom config for synapse
     required: false
     default: '{}'
   customModules:
-    description: 'Comma-separated list of modules to pip install.'
+    description: Comma-separated list of modules to pip install.
     required: false
     default: ''
-  public_baseurl:
-    description: 'Public base URL (defaults to http://localhost:${httpPort} if not defined)'
+  publicBaseurl:
+    description: "Public base URL (defaults to http://localhost:${httpPort} if not defined)"
     required: false
   httpPort:
-    description: 'HTTP port for C-S and S-S APIs'
+    description: HTTP port for C-S and S-S APIs
     required: false
-    default: 8080
+    default: "8080"
   disableRateLimiting:
-    description: 'Disable ratelimiting of server requests'
+    description: Disable ratelimiting of server requests
     required: false
-    default: true
+    default: "true"
 runs:
-  using: 'node16'
-  main: 'dist/create/index.js'
-  post: 'dist/destroy/index.js'
-  post-if: 'always()'
+  using: node20
+  main: dist/create/index.js
+  post: dist/destroy/index.js
+  post-if: always()

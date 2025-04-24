@@ -1,33 +1,34 @@
-const core = require('@actions/core');
-const process = require('process');
-const artifact = require('@actions/artifact');
+import { info, getState, warning, error as actionErrorMessage, getBooleanInput, getInput } from '@actions/core';
+import { kill } from 'process';
+import { DefaultArtifactClient } from '@actions/artifact';
 
 // most @actions toolkit packages have async methods
 async function run() {
+  info("Destroying synapse");
+  var pid = getState("synapse-pid");
+  var cwd = getState("synapse-dir");
+  // Polite termination is for those without pull requests to merge.
   try {
-    core.info(`Destroying synapse ...`);
-    var pid = core.getState("synapse-pid");
-    var cwd = core.getState("synapse-dir");
-    // Polite termination is for those without pull requests to merge.
+    kill(pid, 15);
+    await sleep(10000);
     try {
-      process.kill(pid, 15);
-      await sleep(10000);
-      try {
-        process.kill(pid, 9);
-        core.warn("Synapse did not shutdown in 10s. Terminating");
-      } catch(e) {
-        // expected that synapse PID is not available to be terminated here.
-      }
-    } catch(e) {
-      core.error("Synapse was no-longer running at teardown time")
+      kill(pid, 9);
+      warning("Synapse did not shutdown in 10s! Terminating!");
+    } catch (e) {
+      // expected that synapse PID is not available to be terminated here.
     }
+  } catch (e) {
+    actionErrorMessage("Synapse is not running at teardown time!")
+    actionErrorMessage(e.message)
+  }
 
+  try {
     // Tidy up the synapse directory to contain only log files
     // (useful for an artifact upload)
-    const upload = core.getBooleanInput('uploadLogs', {required: true});
+    const upload = getBooleanInput('uploadLogs');
     if (upload) {
-      const artifactName = core.getInput('artifactName');
-      const artifactClient = artifact.create();
+      const artifactName = getInput('artifactName');
+      const artifactClient = new DefaultArtifactClient();
       const files = [
         `${cwd}/homeserver.yaml`,
         `${cwd}/homeserver.log`,
@@ -36,15 +37,15 @@ async function run() {
         `${cwd}/out.log`,
         `${cwd}/err.log`
       ];
-        
+
       const rootDirectory = `${cwd}`;
       const options = {
-        continueOnError: true
+        retentionDays: parseInt(getInput("artifactRetentionDays"))
       }
       await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
     }
-  } catch (error) {
-    core.setFailed(error.message);
+  } catch (e) {
+    actionErrorMessage(e.message);
   }
 }
 
