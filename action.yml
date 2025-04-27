@@ -18,11 +18,11 @@ inputs:
     required: false
     default: "0"
   customConfig:
-    description: JSON-formatted custom config for synapse
+    description: Custom YAML config for synapse. 
     required: false
-    default: '{}'
+    default: ''
   customModules:
-    description: Comma-separated list of modules to pip install.
+    description: List of modules to install
     required: false
     default: ''
   publicBaseurl:
