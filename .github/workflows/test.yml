@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
 
   # test action works running from the graph
@@ -107,3 +110,41 @@ jobs:
                 sample: "sample"
     - name: Wait for synapse to do something
       run: sleep 60
+
+  test-multiple-custommodules:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ">=3.9"
+    - name: Run synapse
+      uses: ./
+      with: 
+        uploadLogs: true
+        artifactName: test-multiple-custommodules-${{ github.run_id }}-${{ github.run_attempt }}
+        artifactRetentionDays: 1
+        httpPort: 8008
+        installer: "pip"
+        customModules: |
+          git+https://github.com/michaelkaye/noop-synapse-storage-provider.git#egg=noop-synapse-storage-provider
+          git+${{ github.server_url }}/${{ github.repository_owner }}/synapse-s3-storage-provider.git#egg=synapse-s3-storage-provider
+  
+  test-multiple-custommodules-poetry:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ">=3.9"
+    - name: Run synapse
+      uses: ./
+      with: 
+        uploadLogs: true
+        artifactName: test-multiple-custommodules-poetry-${{ github.run_id }}-${{ github.run_attempt }}
+        artifactRetentionDays: 1
+        httpPort: 8008
+        installer: "poetry"
+        customModules: |
+          git+https://github.com/michaelkaye/noop-synapse-storage-provider.git
+          git+${{ github.server_url }}/${{ github.repository_owner }}/synapse-s3-storage-provider.git

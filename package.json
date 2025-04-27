@@ -7,10 +7,6 @@
     "prepare": "ncc build create.js -o dist/create && ncc build destroy.js -o dist/destroy",
     "all": "npm run lint && npm run prepare"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NetherRealmSpigot/setup-matrix-synapse.git"
-  },
   "keywords": [
     "GitHub",
     "Actions",
@@ -19,7 +15,6 @@
     "Synapse"
   ],
   "license": "CC0-1.0",
-  "homepage": "https://github.com/NetherRealmSpigot/setup-matrix-synapse#readme",
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/exec": "^1.1.1",
